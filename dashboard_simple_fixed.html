@@ -2,61 +2,56 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>מכפילי הבנקים בישראל | משקיענית</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
-    * {
+    /* הגדרות בסיס למניעת גלילה כפולה וחיתוכים */
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-      background: #f5f1e8;
-      color: #3e2723;
       width: 100%;
-      overflow-x: hidden;
+      height: 100%;
+      overflow-x: hidden; /* מניעת גלילה רוחבית */
+      overflow-y: hidden; /* העלמת פס הגלילה הפנימי המכוער */
+      background: #faf7f2;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
 
     .dashboard-container {
       width: 100%;
-      max-width: 1200px; /* מקסימום רוחב כדי שלא יתמרח מדי במסכי 4K */
-      margin: 0 auto;
+      margin: 0;
       background: #faf7f2;
-      box-shadow: 0 4px 20px rgba(92, 64, 51, 0.15);
-      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .header {
       background: linear-gradient(135deg, #8B7355 0%, #6F4E37 100%);
       color: #f5f1e8;
-      padding: 30px;
+      padding: 20px;
       border-bottom: 4px solid #5C4033;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 15px;
     }
 
-    .header-content { flex: 1; }
-
-    .header h1 {
-      font-size: clamp(20px, 5vw, 32px); /* פונט גמיש */
-      margin-bottom: 8px;
+    .header-content h1 {
+      font-size: clamp(18px, 4vw, 28px);
+      margin: 0 0 5px 0;
       font-weight: 600;
     }
 
     .header-subtitle {
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.9;
-      margin-bottom: 4px;
+      margin: 0;
     }
 
     .logo-container {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       background: rgba(255, 253, 208, 0.15);
       border-radius: 8px;
       display: flex;
@@ -66,154 +61,94 @@
     }
 
     .logo-container img {
-      width: 90%;
-      height: 90%;
+      width: 80%;
+      height: 80%;
       object-fit: contain;
       filter: brightness(0) invert(1);
     }
 
     .content {
-      padding: 30px 20px;
+      padding: 20px;
     }
 
     .disclaimer {
       background: #fff3cd;
-      border-right: 4px solid #8B7355; /* תיקון לצד ימין בגלל RTL */
-      padding: 15px;
+      border-right: 4px solid #8B7355;
+      padding: 12px;
       border-radius: 6px;
-      margin-bottom: 25px;
-      font-size: 13px;
+      margin-bottom: 20px;
+      font-size: 12px;
       color: #5C4033;
-      line-height: 1.5;
-    }
-
-    .info-box {
-      background: #f0f8ff;
-      border-right: 4px solid #4ECDC4;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 30px;
-      font-size: 13px;
-      color: #2C5F8D;
-      line-height: 1.6;
     }
 
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
     }
 
     .metric-card {
       background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc4 100%);
-      padding: 20px;
+      padding: 15px;
       border-radius: 8px;
       text-align: center;
       border-top: 4px solid #8B7355;
       box-shadow: 0 2px 8px rgba(92, 64, 51, 0.08);
     }
 
-    .metric-label {
-      font-size: 12px;
-      color: #6F4E37;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .metric-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #8B7355;
-    }
-
-    .section-title {
-      font-size: 20px;
-      margin-bottom: 20px;
-      color: #3e2723;
-      display: flex;
-      align-items: center;
-    }
-
-    .section-title::before {
-      content: '';
-      width: 4px;
-      height: 24px;
-      background: #8B7355;
-      margin-left: 10px;
-      border-radius: 2px;
-    }
+    .metric-label { font-size: 11px; font-weight: 600; margin-bottom: 5px; }
+    .metric-value { font-size: 24px; font-weight: 700; color: #8B7355; }
 
     .chart-container {
-      position: relative;
-      height: 350px;
-      width: 100%;
-      margin-bottom: 40px;
+      height: 300px;
       background: white;
-      padding: 15px;
+      padding: 10px;
       border-radius: 8px;
       border: 1px solid #e8dcc4;
+      margin-bottom: 30px;
     }
 
     .table-responsive {
       width: 100%;
       overflow-x: auto;
-      border-radius: 8px;
       border: 1px solid #e8dcc4;
+      border-radius: 8px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px; /* מבטיח שהטבלה לא תתכווץ מדי */
+      background: white;
     }
 
-    table th {
-      background: #e8dcc4;
-      padding: 15px;
-      text-align: right;
-      color: #5C4033;
-      font-size: 14px;
-    }
+    table th { background: #e8dcc4; padding: 12px; text-align: right; font-size: 13px; }
+    table td { padding: 10px 12px; border-bottom: 1px solid #e8dcc4; font-size: 13px; }
 
-    table td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #e8dcc4;
-      font-size: 14px;
-    }
-
-    .above-avg { color: #C62828; font-weight: 600; } /* יקר מהממוצע */
-    .below-avg { color: #2E7D32; font-weight: 600; } /* זול מהממוצע */
+    .above-avg { color: #C62828; font-weight: 600; }
+    .below-avg { color: #2E7D32; font-weight: 600; }
 
     .footer {
       background: #e8dcc4;
-      padding: 20px;
+      padding: 15px;
       text-align: center;
-      font-size: 12px;
-      color: #5C4033;
+      font-size: 11px;
     }
 
-    /* התאמות למובייל */
     @media (max-width: 600px) {
-      .header {
-        flex-direction: column;
-        text-align: center;
-        padding: 20px;
-      }
-      .logo-container { margin: 0 auto; }
-      .metrics-grid { grid-template-columns: 1fr; }
-      .chart-container { height: 250px; }
-      .header h1 { font-size: 24px; }
+      .header { flex-direction: column; text-align: center; }
+      .logo-container { margin: 0 auto; width: 60px; height: 60px; }
+      .chart-container { height: 220px; }
     }
   </style>
 </head>
 <body>
 
-<div class="dashboard-container">
+<div class="dashboard-container" id="main-container">
   <div class="header">
     <div class="header-content">
       <h1>מכפילי הבנקים בישראל</h1>
-      <p class="header-subtitle">משקיענית | השוואת מכפילי הון לממוצע המשוקלל</p>
+      <p class="header-subtitle">השוואת מכפילי הון לממוצע המשוקלל</p>
     </div>
     <div class="logo-container">
       <img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png/v1/fill/w_426,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D7%9C%D7%95%D7%92%D7%95%20%D7%9E%D7%A9%D7%A7%D7%99%D7%A2%D7%A0%D7%99%D7%AA%20(1)_edited.png" alt="Mashkianit">
@@ -221,32 +156,23 @@
   </div>
 
   <div class="content" id="content">
-    <div style="text-align: center; padding: 50px;">טוען נתונים...</div>
+    <div style="text-align: center; padding: 30px;">טוען נתונים...</div>
   </div>
 
   <div class="footer">
-    ⚠️ הערה חשובה: המידע מיועד למטרות לימודיות בלבד ואינו מהווה ייעוץ השקעות.
+    ⚠️ המידע מיועד למטרות למידה בלבד ואינו מהווה ייעוץ השקעות.
   </div>
 </div>
 
 <script>
-  const BANK_WEIGHTS = {
-    'בנק פועלים': 0.3478, 'בנק לאומי': 0.3330, 'דיסקונט בנק': 0.1450,
-    'בנק מזרחי טפחות': 0.1275, 'בנק בינלאומי': 0.0467
-  };
-
-  const bankColors = {
-    'בנק פועלים': '#FF6B6B', 'בנק לאומי': '#4ECDC4', 'דיסקונט בנק': '#45B7D1',
-    'בנק מזרחי טפחות': '#FFA07A', 'בנק בינלאומי': '#98D8C8'
-  };
-
+  // נתוני משקולות וצבעים
+  const BANK_WEIGHTS = { 'בנק פועלים': 0.3478, 'בנק לאומי': 0.3330, 'דיסקונט בנק': 0.1450, 'בנק מזרחי טפחות': 0.1275, 'בנק בינלאומי': 0.0467 };
+  const bankColors = { 'בנק פועלים': '#FF6B6B', 'בנק לאומי': '#4ECDC4', 'דיסקונט בנק': '#45B7D1', 'בנק מזרחי טפחות': '#FFA07A', 'בנק בינלאומי': '#98D8C8' };
   const historicalData = {
     years: ['2021', '2022', '2023', '2024', '2025'],
     banks: {
-      'בנק פועלים': [1.0, 0.9, 0.9, 1.0, 1.6],
-      'בנק לאומי': [1.1, 0.9, 0.8, 1.2, 1.6],
-      'דיסקונט בנק': [1.1, 0.9, 0.8, 1.0, 1.2],
-      'בנק מזרחי טפחות': [1.4, 1.2, 1.1, 1.5, 1.8],
+      'בנק פועלים': [1.0, 0.9, 0.9, 1.0, 1.6], 'בנק לאומי': [1.1, 0.9, 0.8, 1.2, 1.6],
+      'דיסקונט בנק': [1.1, 0.9, 0.8, 1.0, 1.2], 'בנק מזרחי טפחות': [1.4, 1.2, 1.1, 1.5, 1.8],
       'בנק בינלאומי': [1.3, 1.4, 1.3, 1.4, 1.8]
     }
   };
@@ -257,24 +183,20 @@
       const text = await response.text();
       const lines = text.trim().split('\n');
       const data = {};
-      
       for (let i = 1; i < lines.length; i++) {
         const [name, cap, book] = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-        if (name && cap && book) {
-          data[name] = { marketCap: parseFloat(cap), bookValue: parseFloat(book), weight: BANK_WEIGHTS[name] || 0 };
-        }
+        if (name && cap && book) data[name] = { marketCap: parseFloat(cap), bookValue: parseFloat(book), weight: BANK_WEIGHTS[name] || 0 };
       }
-      return data;
-    } catch (e) {
-      console.error("Using mock data due to fetch error");
-      return {
-        'בנק פועלים': { marketCap: 107.9, bookValue: 64.6, weight: 0.3478 },
-        'בנק לאומי': { marketCap: 114.1, bookValue: 68.1, weight: 0.3330 },
-        'דיסקונט בנק': { marketCap: 40.2, bookValue: 33.8, weight: 0.1450 },
-        'בנק מזרחי טפחות': { marketCap: 60.2, bookValue: 34.7, weight: 0.1275 },
-        'בנק בינלאומי': { marketCap: 24.9, bookValue: 14.6, weight: 0.0467 }
-      };
-    }
+      return Object.keys(data).length ? data : getMockData();
+    } catch (e) { return getMockData(); }
+  }
+
+  function getMockData() {
+    return {
+      'בנק פועלים': { marketCap: 107.9, bookValue: 64.6, weight: 0.3478 }, 'בנק לאומי': { marketCap: 114.1, bookValue: 68.1, weight: 0.3330 },
+      'דיסקונט בנק': { marketCap: 40.2, bookValue: 33.8, weight: 0.1450 }, 'בנק מזרחי טפחות': { marketCap: 60.2, bookValue: 34.7, weight: 0.1275 },
+      'בנק בינלאומי': { marketCap: 24.9, bookValue: 14.6, weight: 0.0467 }
+    };
   }
 
   function render(data) {
@@ -286,49 +208,26 @@
     });
 
     const avg = totalWeightedPB;
-    const content = document.getElementById('content');
-
-    let html = `
-      <div class="disclaimer">המידע מיועד למטרות למידה בלבד. הממוצע המשוקלל מחושב לפי משקלי מדד ת"א בנקים-5.</div>
-      
+    document.getElementById('content').innerHTML = `
+      <div class="disclaimer">הממוצע המשוקלל מחושב לפי משקלי מדד ת"א בנקים-5.</div>
       <div class="metrics-grid">
         <div class="metric-card"><div class="metric-label">ממוצע משוקלל (P/B)</div><div class="metric-value">${avg.toFixed(3)}</div></div>
-        <div class="metric-card"><div class="metric-label">בנקים זולים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb < avg).length}</div></div>
-        <div class="metric-card"><div class="metric-label">בנקים יקרים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb > avg).length}</div></div>
+        <div class="metric-card"><div class="metric-label">זולים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb < avg).length}</div></div>
+        <div class="metric-card"><div class="metric-label">יקרים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb > avg).length}</div></div>
       </div>
-
-      <h2 class="section-title">מגמת מכפילי הון היסטורית</h2>
       <div class="chart-container"><canvas id="timelineChart"></canvas></div>
-
-      <h2 class="section-title">פירוט נתונים נוכחיים</h2>
       <div class="table-responsive">
         <table>
-          <thead>
-            <tr>
-              <th>שם הבנק</th>
-              <th>שווי שוק (מ"ש)</th>
-              <th>הון עצמי (מ"ש)</th>
-              <th>מכפיל הון (P/B)</th>
-              <th>סטטוס</th>
-            </tr>
-          </thead>
+          <thead><tr><th>בנק</th><th>שווי שוק</th><th>הון עצמי</th><th>P/B</th></tr></thead>
           <tbody>
-            ${banks.map(b => `
-              <tr>
-                <td><strong>${b.name}</strong></td>
-                <td>${b.marketCap.toLocaleString()}</td>
-                <td>${b.bookValue.toLocaleString()}</td>
-                <td class="${b.pb > avg ? 'above-avg' : 'below-avg'}">${b.pb.toFixed(3)}</td>
-                <td class="${b.pb > avg ? 'above-avg' : 'below-avg'}">${b.pb > avg ? 'יקר מהממוצע' : 'זול מהממוצע'}</td>
-              </tr>
-            `).join('')}
+            ${banks.map(b => `<tr><td><strong>${b.name}</strong></td><td>${b.marketCap.toLocaleString()}</td><td>${b.bookValue.toLocaleString()}</td><td class="${b.pb > avg ? 'above-avg' : 'below-avg'}">${b.pb.toFixed(3)}</td></tr>`).join('')}
           </tbody>
         </table>
       </div>
     `;
-
-    content.innerHTML = html;
     initChart();
+    // שליחת הגובה ל-Wix לאחר הרינדור
+    setTimeout(sendHeightToWix, 500);
   }
 
   function initChart() {
@@ -338,24 +237,23 @@
       data: {
         labels: historicalData.years,
         datasets: Object.keys(historicalData.banks).map(name => ({
-          label: name,
-          data: historicalData.banks[name],
-          borderColor: bankColors[name],
-          tension: 0.3,
-          fill: false
+          label: name, data: historicalData.banks[name], borderColor: bankColors[name], tension: 0.3, fill: false
         }))
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', rtl: true } }
-      }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
     });
+  }
+
+  // פונקציה לעדכון גובה האלמנט ב-Wix
+  function sendHeightToWix() {
+    const height = document.getElementById('main-container').offsetHeight;
+    window.parent.postMessage({ type: 'resize', height: height }, "*");
   }
 
   window.onload = async () => {
     const data = await fetchData();
     render(data);
+    window.addEventListener('resize', sendHeightToWix);
   };
 </script>
 </body>
