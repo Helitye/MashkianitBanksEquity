@@ -31,15 +31,47 @@
     .header {
       background: linear-gradient(135deg, #8B7355 0%, #6F4E37 100%);
       color: #f5f1e8;
-      padding: 40px 30px;
-      text-align: center;
+      padding: 30px;
       border-bottom: 4px solid #5C4033;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .header-content {
+      flex: 1;
     }
 
     .header h1 {
       font-size: 32px;
       margin-bottom: 8px;
       font-weight: 600;
+    }
+
+    .header-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+
+    .logo-container {
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 253, 208, 0.15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
     }
 
     .content {
@@ -174,8 +206,14 @@
 <body>
   <div class="dashboard-container">
     <div class="header">
-      <h1>מכפילי הבנקים בישראל</h1>
-      <p style="opacity: 0.9;">צפה בנתוני שווי הוני של הבנקים הגדולים | משקיענית</p>
+      <div class="header-content">
+        <h1>מכפילי הבנקים בישראל</h1>
+        <p class="header-subtitle">צפה בנתוני שווי הוני של הבנקים הגדולים</p>
+        <p class="header-subtitle">משקיענית | מחקר שווקים חדשני</p>
+      </div>
+      <div class="logo-container">
+        <img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png/v1/fill/w_426,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D7%9C%D7%95%D7%92%D7%95%20%D7%9E%D7%A9%D7%A7%D7%99%D7%A2%D7%A0%D7%99%D7%AA%20(1)_edited.png" alt="Mashkianit">
+      </div>
     </div>
 
     <div class="content" id="content">
