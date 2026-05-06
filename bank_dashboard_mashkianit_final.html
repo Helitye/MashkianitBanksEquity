@@ -749,40 +749,6 @@
       });
     }
 
-    // Google Sheets Configuration
-    const CONFIG = {
-      SPREADSHEET_ID: '1rrODcerkbFY-VubbP8Hw0vlKdaZF1n0Zd8c1XMQQ4oE',
-      SHEET_NAME: 'Sheet1',
-      CLIENT_ID: '908611343208-cb62hfmmvhlpdkq4dpsrp6qmsc3ukj3o.apps.googleusercontent.com',
-      API_KEY: '', // Will be set after authentication
-      CACHE_TIME: 5 * 60 * 1000 // 5 minutes
-    };
-
-    let lastFetchTime = 0;
-    let cachedData = null;
-
-    // Initialize Google API
-    async function initGoogleAPI() {
-      return new Promise((resolve) => {
-        gapi.load('client:auth2', async () => {
-          try {
-            await gapi.client.init({
-              apiKey: CONFIG.API_KEY,
-              clientId: CONFIG.CLIENT_ID,
-              scope: 'https://www.googleapis.com/auth/spreadsheets.readonly',
-              discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-            });
-            resolve(true);
-          } catch (error) {
-            console.error('Google API initialization failed:', error);
-            // Fallback to mock data if Google API fails
-            loadMockData();
-            resolve(false);
-          }
-        });
-      });
-    }
-
     // ====== Fetch data from Google Sheets CSV ======
     async function fetchDataFromSheets() {
       const now = Date.now();
@@ -793,11 +759,14 @@
       }
 
       try {
-        // CSV URL from Google Sheets
+        // CSV URL from Google Sheets with CORS proxy
         const spreadsheetId = '1rrODcerkbFY-VubbP8Hw0vlKdaZF1n0Zd8c1XMQQ4oE';
-const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv`;
+        const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv`;
         
         const response = await fetch(csvUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const text = await response.text();
         
         // Parse CSV
@@ -875,9 +844,7 @@ const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?f
 
     // ====== Initialize and fetch data on page load ======
     async function initDashboard() {
-      const initialized = await initGoogleAPI();
-      
-      if (initialized) {
+      try {
         // Fetch data from Google Sheets
         const data = await fetchDataFromSheets();
         updateDashboardWithData(data);
@@ -886,9 +853,10 @@ const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?f
         setInterval(async () => {
           const updatedData = await fetchDataFromSheets();
           updateDashboardWithData(updatedData);
-        }, CONFIG.CACHE_TIME);
-      } else {
-        // Use mock data if Google API fails
+        }, 5 * 60 * 1000);
+      } catch (error) {
+        console.error('Dashboard initialization error:', error);
+        // Use mock data if something goes wrong
         renderDashboard();
       }
     }
