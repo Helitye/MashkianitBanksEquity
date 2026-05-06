@@ -2,28 +2,31 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מכפילי הבנקים בישראל | משקיענית</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
-    /* הגדרות בסיס למניעת גלילה כפולה וחיתוכים */
+    /* הגדרות בסיס - הפעם עם גלילה מותרת כדי שלא ייעלם תוכן */
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
-      overflow-x: hidden; /* מניעת גלילה רוחבית */
-      overflow-y: hidden; /* העלמת פס הגלילה הפנימי המכוער */
+      min-height: 100vh;
       background: #faf7f2;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto; /* מאפשר גלילה אם התוכן חורג מהתיבה של Wix */
     }
+
+    /* הסתרת פס גלילה בדפדפנים מודרניים למראה נקי, אך הגלילה עדיין עובדת */
+    body::-webkit-scrollbar { width: 0px; background: transparent; }
+    body { -ms-overflow-style: none; scrollbar-width: none; }
 
     .dashboard-container {
       width: 100%;
-      margin: 0;
-      background: #faf7f2;
       display: flex;
       flex-direction: column;
+      visibility: visible !important; /* מבטיח שהקונטיינר יוצג */
     }
 
     .header {
@@ -37,109 +40,51 @@
       gap: 15px;
     }
 
-    .header-content h1 {
-      font-size: clamp(18px, 4vw, 28px);
-      margin: 0 0 5px 0;
-      font-weight: 600;
-    }
-
-    .header-subtitle {
-      font-size: 13px;
-      opacity: 0.9;
-      margin: 0;
-    }
+    .header-content h1 { font-size: 24px; margin: 0 0 5px 0; }
+    .header-subtitle { font-size: 13px; opacity: 0.9; margin: 0; }
 
     .logo-container {
-      width: 80px;
-      height: 80px;
+      width: 70px; height: 70px;
       background: rgba(255, 253, 208, 0.15);
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
 
-    .logo-container img {
-      width: 80%;
-      height: 80%;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-    }
+    .logo-container img { width: 80%; height: 80%; object-fit: contain; filter: brightness(0) invert(1); }
 
-    .content {
-      padding: 20px;
-    }
+    .content { padding: 20px; flex-grow: 1; }
 
     .disclaimer {
-      background: #fff3cd;
-      border-right: 4px solid #8B7355;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      font-size: 12px;
-      color: #5C4033;
+      background: #fff3cd; border-right: 4px solid #8B7355;
+      padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 12px;
     }
 
     .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px; margin-bottom: 25px;
     }
 
     .metric-card {
-      background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc4 100%);
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      border-top: 4px solid #8B7355;
-      box-shadow: 0 2px 8px rgba(92, 64, 51, 0.08);
+      background: #f5f1e8; padding: 15px; border-radius: 8px;
+      text-align: center; border-top: 4px solid #8B7355;
     }
 
-    .metric-label { font-size: 11px; font-weight: 600; margin-bottom: 5px; }
-    .metric-value { font-size: 24px; font-weight: 700; color: #8B7355; }
+    .metric-value { font-size: 22px; font-weight: 700; color: #8B7355; }
 
     .chart-container {
-      height: 300px;
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #e8dcc4;
-      margin-bottom: 30px;
+      height: 300px; background: white; padding: 10px;
+      border-radius: 8px; border: 1px solid #e8dcc4; margin-bottom: 25px;
     }
 
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid #e8dcc4;
-      border-radius: 8px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    table th { background: #e8dcc4; padding: 12px; text-align: right; font-size: 13px; }
-    table td { padding: 10px 12px; border-bottom: 1px solid #e8dcc4; font-size: 13px; }
+    .table-responsive { width: 100%; overflow-x: auto; border: 1px solid #e8dcc4; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    table th { background: #e8dcc4; padding: 10px; text-align: right; font-size: 13px; }
+    table td { padding: 10px; border-bottom: 1px solid #e8dcc4; font-size: 13px; }
 
     .above-avg { color: #C62828; font-weight: 600; }
     .below-avg { color: #2E7D32; font-weight: 600; }
 
-    .footer {
-      background: #e8dcc4;
-      padding: 15px;
-      text-align: center;
-      font-size: 11px;
-    }
-
-    @media (max-width: 600px) {
-      .header { flex-direction: column; text-align: center; }
-      .logo-container { margin: 0 auto; width: 60px; height: 60px; }
-      .chart-container { height: 220px; }
-    }
+    .footer { background: #e8dcc4; padding: 15px; text-align: center; font-size: 11px; }
   </style>
 </head>
 <body>
@@ -148,26 +93,24 @@
   <div class="header">
     <div class="header-content">
       <h1>מכפילי הבנקים בישראל</h1>
-      <p class="header-subtitle">השוואת מכפילי הון לממוצע המשוקלל</p>
+      <p class="header-subtitle">משקיענית | השוואת מכפילי הון</p>
     </div>
     <div class="logo-container">
-      <img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png/v1/fill/w_426,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D7%9C%D7%95%D7%92%D7%95%20%D7%9E%D7%A9%D7%A7%D7%99%D7%A2%D7%A0%D7%99%D7%AA%20(1)_edited.png" alt="Mashkianit">
+      <img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png" alt="Mashkianit">
     </div>
   </div>
 
   <div class="content" id="content">
-    <div style="text-align: center; padding: 30px;">טוען נתונים...</div>
+    <div style="text-align: center; padding: 50px;">טוען נתונים...</div>
   </div>
 
-  <div class="footer">
-    ⚠️ המידע מיועד למטרות למידה בלבד ואינו מהווה ייעוץ השקעות.
-  </div>
+  <div class="footer">⚠️ המידע למטרות למידה בלבד ואינו מהווה ייעוץ השקעות.</div>
 </div>
 
 <script>
-  // נתוני משקולות וצבעים
   const BANK_WEIGHTS = { 'בנק פועלים': 0.3478, 'בנק לאומי': 0.3330, 'דיסקונט בנק': 0.1450, 'בנק מזרחי טפחות': 0.1275, 'בנק בינלאומי': 0.0467 };
   const bankColors = { 'בנק פועלים': '#FF6B6B', 'בנק לאומי': '#4ECDC4', 'דיסקונט בנק': '#45B7D1', 'בנק מזרחי טפחות': '#FFA07A', 'בנק בינלאומי': '#98D8C8' };
+  
   const historicalData = {
     years: ['2021', '2022', '2023', '2024', '2025'],
     banks: {
@@ -177,9 +120,20 @@
     }
   };
 
-  async function fetchData() {
+  function getMockData() {
+    return {
+      'בנק פועלים': { marketCap: 107.9, bookValue: 64.6, weight: 0.3478 },
+      'בנק לאומי': { marketCap: 114.1, bookValue: 68.1, weight: 0.3330 },
+      'דיסקונט בנק': { marketCap: 40.2, bookValue: 33.8, weight: 0.1450 },
+      'בנק מזרחי טפחות': { marketCap: 60.2, bookValue: 34.7, weight: 0.1275 },
+      'בנק בינלאומי': { marketCap: 24.9, bookValue: 14.6, weight: 0.0467 }
+    };
+  }
+
+  async function init() {
     try {
       const response = await fetch('https://docs.google.com/spreadsheets/d/1rrODcerkbFY-VubbP8Hw0vlKdaZF1n0Zd8c1XMQQ4oE/export?format=csv');
+      if (!response.ok) throw new Error();
       const text = await response.text();
       const lines = text.trim().split('\n');
       const data = {};
@@ -187,16 +141,10 @@
         const [name, cap, book] = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
         if (name && cap && book) data[name] = { marketCap: parseFloat(cap), bookValue: parseFloat(book), weight: BANK_WEIGHTS[name] || 0 };
       }
-      return Object.keys(data).length ? data : getMockData();
-    } catch (e) { return getMockData(); }
-  }
-
-  function getMockData() {
-    return {
-      'בנק פועלים': { marketCap: 107.9, bookValue: 64.6, weight: 0.3478 }, 'בנק לאומי': { marketCap: 114.1, bookValue: 68.1, weight: 0.3330 },
-      'דיסקונט בנק': { marketCap: 40.2, bookValue: 33.8, weight: 0.1450 }, 'בנק מזרחי טפחות': { marketCap: 60.2, bookValue: 34.7, weight: 0.1275 },
-      'בנק בינלאומי': { marketCap: 24.9, bookValue: 14.6, weight: 0.0467 }
-    };
+      render(Object.keys(data).length ? data : getMockData());
+    } catch (e) {
+      render(getMockData());
+    }
   }
 
   function render(data) {
@@ -211,9 +159,8 @@
     document.getElementById('content').innerHTML = `
       <div class="disclaimer">הממוצע המשוקלל מחושב לפי משקלי מדד ת"א בנקים-5.</div>
       <div class="metrics-grid">
-        <div class="metric-card"><div class="metric-label">ממוצע משוקלל (P/B)</div><div class="metric-value">${avg.toFixed(3)}</div></div>
-        <div class="metric-card"><div class="metric-label">זולים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb < avg).length}</div></div>
-        <div class="metric-card"><div class="metric-label">יקרים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb > avg).length}</div></div>
+        <div class="metric-card"><div style="font-size:11px">ממוצע משוקלל</div><div class="metric-value">${avg.toFixed(3)}</div></div>
+        <div class="metric-card"><div style="font-size:11px">זולים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb < avg).length}</div></div>
       </div>
       <div class="chart-container"><canvas id="timelineChart"></canvas></div>
       <div class="table-responsive">
@@ -225,12 +172,7 @@
         </table>
       </div>
     `;
-    initChart();
-    // שליחת הגובה ל-Wix לאחר הרינדור
-    setTimeout(sendHeightToWix, 500);
-  }
-
-  function initChart() {
+    
     const ctx = document.getElementById('timelineChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
@@ -240,21 +182,11 @@
           label: name, data: historicalData.banks[name], borderColor: bankColors[name], tension: 0.3, fill: false
         }))
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
     });
   }
 
-  // פונקציה לעדכון גובה האלמנט ב-Wix
-  function sendHeightToWix() {
-    const height = document.getElementById('main-container').offsetHeight;
-    window.parent.postMessage({ type: 'resize', height: height }, "*");
-  }
-
-  window.onload = async () => {
-    const data = await fetchData();
-    render(data);
-    window.addEventListener('resize', sendHeightToWix);
-  };
+  window.onload = init;
 </script>
 </body>
 </html>
