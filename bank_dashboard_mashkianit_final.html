@@ -794,7 +794,8 @@
 
       try {
         // CSV URL from Google Sheets
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtUroQZ4i5LBr7OcC5xi4GVtqvUhQKN5VS3SEVw9AdZ7WpaHoac2eTGrb_tgr42DHkVxXR9Dz5gF_m/pub?gid=0&single=true&output=csv';
+        const spreadsheetId = '1rrODcerkbFY-VubbP8Hw0vlKdaZF1n0Zd8c1XMQQ4oE';
+const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv`;
         
         const response = await fetch(csvUrl);
         const text = await response.text();
