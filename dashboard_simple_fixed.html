@@ -15,9 +15,11 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
       background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc4 100%);
-      padding: 20px;
+      padding: 0;
+      margin: 0;
       color: #3e2723;
-      width: 100vw;
+      width: 100%;
+      max-width: 100%;
       overflow-x: hidden;
     }
 
@@ -29,11 +31,27 @@
       display: none !important;
     }
 
+    /* Hide scrollbars and GitHub bars */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    
+    html {
+      scrollbar-width: none;
+    }
+    
+    /* Hide GitHub Pages sidebar */
+    .github-corner,
+    [role="contentinfo"],
+    .page-header,
+    .site-footer {
+      display: none !important;
+    }
+
     .dashboard-container {
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 100%;
+      margin: 0;
       background: #faf7f2;
-      border-radius: 12px;
       box-shadow: 0 4px 20px rgba(92, 64, 51, 0.15);
       overflow: hidden;
     }
