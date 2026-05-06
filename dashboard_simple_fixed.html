@@ -98,6 +98,17 @@
       color: #5C4033;
     }
 
+    .info-box {
+      background: #f0f8ff;
+      border-left: 4px solid #4ECDC4;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 30px;
+      font-size: 12px;
+      color: #2C5F8D;
+      line-height: 1.6;
+    }
+
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -240,8 +251,8 @@
     <div class="header">
       <div class="header-content">
         <h1>מכפילי הבנקים בישראל</h1>
-        <p class="header-subtitle">צפה בנתוני שווי הוני של הבנקים הגדולים</p>
-        <p class="header-subtitle">משקיענית | מחקר שווקים חדשני</p>
+        <p class="header-subtitle">צפה בנתוני שווי הוני של הבנקים בישראל</p>
+        <p class="header-subtitle">משקיענית | מכפילי ההון של הבנקים מול הממוצע המשוקלל של מדד הבנקים</p>
       </div>
       <div class="logo-container">
         <img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png/v1/fill/w_426,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D7%9C%D7%95%D7%92%D7%95%20%D7%9E%D7%A9%D7%A7%D7%99%D7%A2%D7%A0%D7%99%D7%AA%20(1)_edited.png" alt="Mashkianit">
@@ -456,15 +467,28 @@
 
       let html = '<div class="disclaimer">⚠️ הערה חשובה: המידע בדאשבורד זה מיועד למטרות למידה בלבד ואינו מהווה שום המלצה להשקעה, ייעוץ פיננסי או הנחיות מסחר.</div>';
 
-      // Metrics
-      html += '<div class="metrics-grid">';
-      html += '<div class="metric-card"><div class="metric-label">ממוצע משוקלל</div><div class="metric-value">' + weightedAvg.toFixed(3) + '</div></div>';
+      // Calculate statistics
+      let aboveAvgCount = 0;
+      let belowAvgCount = 0;
       
       for (const name of Object.keys(banks)) {
         const info = banks[name];
-        html += '<div class="metric-card"><div class="metric-label">' + name + '</div><div class="metric-value">' + info.priceToBook.toFixed(3) + '</div></div>';
+        if (info.priceToBook > weightedAvg) {
+          aboveAvgCount++;
+        } else {
+          belowAvgCount++;
+        }
       }
+
+      // Statistics section
+      html += '<div class="metrics-grid">';
+      html += '<div class="metric-card"><div class="metric-label">ממוצע משוקלל</div><div class="metric-value">' + weightedAvg.toFixed(3) + '</div></div>';
+      html += '<div class="metric-card"><div class="metric-label">בנקים מעל הממוצע</div><div class="metric-value">' + aboveAvgCount + '</div></div>';
+      html += '<div class="metric-card"><div class="metric-label">בנקים מתחת לממוצע</div><div class="metric-value">' + belowAvgCount + '</div></div>';
       html += '</div>';
+
+      // Info about weighted average
+      html += '<div class="info-box">הממוצע המשוקלל מחושב על סמך משקלי הבנקים במדד הבנקים (ת"א בנקים-5): בנק פועלים 34.78%, בנק לאומי 33.30%, דיסקונט בנק 14.50%, בנק מזרחי טפחות 12.75%, בנק בינלאומי 4.67%</div>';
 
       // Historical chart
       html += '<h2 class="section-title">מכפילי הון - נתונים היסטוריים (2021-2025)</h2>';
