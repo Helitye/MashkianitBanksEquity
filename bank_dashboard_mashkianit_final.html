@@ -783,7 +783,7 @@
       });
     }
 
-    // Fetch data from Google Sheets
+    // ====== Fetch data from Google Sheets CSV ======
     async function fetchDataFromSheets() {
       const now = Date.now();
       
@@ -793,25 +793,27 @@
       }
 
       try {
-        const response = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: CONFIG.SPREADSHEET_ID,
-          range: `${CONFIG.SHEET_NAME}!A1:C6`,
-        });
-
-        const rows = response.result.values;
-        if (!rows || rows.length < 2) {
+        // CSV URL from Google Sheets
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtUroQZ4i5LBr7OcC5xi4GVtqvUhQKN5VS3SEVw9AdZ7WpaHoac2eTGrb_tgr42DHkVxXR9Dz5gF_m/pub?gid=0&single=true&output=csv';
+        
+        const response = await fetch(csvUrl);
+        const text = await response.text();
+        
+        // Parse CSV
+        const lines = text.trim().split('\n');
+        if (lines.length < 2) {
           console.log('No data found in sheet, using mock data');
           return getDefaultMockData();
         }
 
-        // Parse data from sheet
+        // Skip header row, parse data
         const data = {};
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i];
-          if (row.length >= 3) {
-            const bankName = row[0];
-            const marketCap = parseFloat(row[1]) || 0;
-            const bookValue = parseFloat(row[2]) || 0;
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+          if (values.length >= 3) {
+            const bankName = values[0];
+            const marketCap = parseFloat(values[1]) || 0;
+            const bookValue = parseFloat(values[2]) || 0;
             const priceToBook = bookValue > 0 ? marketCap / bookValue : 0;
 
             data[bankName] = {
@@ -826,6 +828,7 @@
 
         cachedData = data;
         lastFetchTime = now;
+        console.log('✅ Data fetched from Google Sheets');
         return data;
       } catch (error) {
         console.error('Error fetching from Google Sheets:', error);
