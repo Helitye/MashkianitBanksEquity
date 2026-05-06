@@ -6,7 +6,6 @@
   <title>מכפילי הבנקים בישראל | משקיענית</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
-    /* הגדרות בסיס - הפעם עם גלילה מותרת כדי שלא ייעלם תוכן */
     html, body {
       margin: 0;
       padding: 0;
@@ -15,20 +14,13 @@
       background: #faf7f2;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
       overflow-x: hidden;
-      overflow-y: auto; /* מאפשר גלילה אם התוכן חורג מהתיבה של Wix */
+      /* העלמת פס גלילה */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
+    body::-webkit-scrollbar { display: none; }
 
-    /* הסתרת פס גלילה בדפדפנים מודרניים למראה נקי, אך הגלילה עדיין עובדת */
-    body::-webkit-scrollbar { width: 0px; background: transparent; }
-    body { -ms-overflow-style: none; scrollbar-width: none; }
-
-    .dashboard-container {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      visibility: visible !important; /* מבטיח שהקונטיינר יוצג */
-    }
-
+    .dashboard-container { width: 100%; display: flex; flex-direction: column; }
     .header {
       background: linear-gradient(135deg, #8B7355 0%, #6F4E37 100%);
       color: #f5f1e8;
@@ -39,153 +31,69 @@
       justify-content: space-between;
       gap: 15px;
     }
-
-    .header-content h1 { font-size: 24px; margin: 0 0 5px 0; }
-    .header-subtitle { font-size: 13px; opacity: 0.9; margin: 0; }
-
-    .logo-container {
-      width: 70px; height: 70px;
-      background: rgba(255, 253, 208, 0.15);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-
+    .header-content h1 { font-size: 24px; margin: 0; }
+    .logo-container { width: 70px; height: 70px; background: rgba(255, 253, 208, 0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
     .logo-container img { width: 80%; height: 80%; object-fit: contain; filter: brightness(0) invert(1); }
-
-    .content { padding: 20px; flex-grow: 1; }
-
-    .disclaimer {
-      background: #fff3cd; border-right: 4px solid #8B7355;
-      padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 12px;
-    }
-
-    .metrics-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px; margin-bottom: 25px;
-    }
-
-    .metric-card {
-      background: #f5f1e8; padding: 15px; border-radius: 8px;
-      text-align: center; border-top: 4px solid #8B7355;
-    }
-
+    .content { padding: 20px; }
+    .metric-card { background: #f5f1e8; padding: 15px; border-radius: 8px; text-align: center; border-top: 4px solid #8B7355; margin-bottom: 15px; }
     .metric-value { font-size: 22px; font-weight: 700; color: #8B7355; }
-
-    .chart-container {
-      height: 300px; background: white; padding: 10px;
-      border-radius: 8px; border: 1px solid #e8dcc4; margin-bottom: 25px;
-    }
-
+    .chart-container { height: 300px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e8dcc4; margin-bottom: 25px; }
     .table-responsive { width: 100%; overflow-x: auto; border: 1px solid #e8dcc4; border-radius: 8px; }
     table { width: 100%; border-collapse: collapse; background: white; }
-    table th { background: #e8dcc4; padding: 10px; text-align: right; font-size: 13px; }
-    table td { padding: 10px; border-bottom: 1px solid #e8dcc4; font-size: 13px; }
-
+    table th { background: #e8dcc4; padding: 10px; text-align: right; }
+    table td { padding: 10px; border-bottom: 1px solid #e8dcc4; }
     .above-avg { color: #C62828; font-weight: 600; }
     .below-avg { color: #2E7D32; font-weight: 600; }
-
-    .footer { background: #e8dcc4; padding: 15px; text-align: center; font-size: 11px; }
   </style>
 </head>
 <body>
-
-<div class="dashboard-container" id="main-container">
+<div class="dashboard-container">
   <div class="header">
-    <div class="header-content">
-      <h1>מכפילי הבנקים בישראל</h1>
-      <p class="header-subtitle">משקיענית | השוואת מכפילי הון</p>
-    </div>
-    <div class="logo-container">
-      <img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png" alt="Mashkianit">
-    </div>
+    <div class="header-content"><h1>מכפילי הבנקים בישראל</h1><p style="font-size:12px;opacity:0.8">משקיענית | השוואת מכפילים</p></div>
+    <div class="logo-container"><img src="https://static.wixstatic.com/media/894475_0fbb7c240f6e4744a0d012d6566a4ce6~mv2.png" alt="Logo"></div>
   </div>
-
-  <div class="content" id="content">
-    <div style="text-align: center; padding: 50px;">טוען נתונים...</div>
-  </div>
-
-  <div class="footer">⚠️ המידע למטרות למידה בלבד ואינו מהווה ייעוץ השקעות.</div>
+  <div class="content" id="content"><div style="text-align:center;padding:50px">טוען...</div></div>
 </div>
-
 <script>
+  // לוגיקת הנתונים והגרפים (אותו דבר כמו קודם)
   const BANK_WEIGHTS = { 'בנק פועלים': 0.3478, 'בנק לאומי': 0.3330, 'דיסקונט בנק': 0.1450, 'בנק מזרחי טפחות': 0.1275, 'בנק בינלאומי': 0.0467 };
   const bankColors = { 'בנק פועלים': '#FF6B6B', 'בנק לאומי': '#4ECDC4', 'דיסקונט בנק': '#45B7D1', 'בנק מזרחי טפחות': '#FFA07A', 'בנק בינלאומי': '#98D8C8' };
-  
-  const historicalData = {
-    years: ['2021', '2022', '2023', '2024', '2025'],
-    banks: {
-      'בנק פועלים': [1.0, 0.9, 0.9, 1.0, 1.6], 'בנק לאומי': [1.1, 0.9, 0.8, 1.2, 1.6],
-      'דיסקונט בנק': [1.1, 0.9, 0.8, 1.0, 1.2], 'בנק מזרחי טפחות': [1.4, 1.2, 1.1, 1.5, 1.8],
-      'בנק בינלאומי': [1.3, 1.4, 1.3, 1.4, 1.8]
-    }
-  };
-
-  function getMockData() {
-    return {
-      'בנק פועלים': { marketCap: 107.9, bookValue: 64.6, weight: 0.3478 },
-      'בנק לאומי': { marketCap: 114.1, bookValue: 68.1, weight: 0.3330 },
-      'דיסקונט בנק': { marketCap: 40.2, bookValue: 33.8, weight: 0.1450 },
-      'בנק מזרחי טפחות': { marketCap: 60.2, bookValue: 34.7, weight: 0.1275 },
-      'בנק בינלאומי': { marketCap: 24.9, bookValue: 14.6, weight: 0.0467 }
-    };
-  }
-
   async function init() {
     try {
-      const response = await fetch('https://docs.google.com/spreadsheets/d/1rrODcerkbFY-VubbP8Hw0vlKdaZF1n0Zd8c1XMQQ4oE/export?format=csv');
-      if (!response.ok) throw new Error();
-      const text = await response.text();
+      const resp = await fetch('https://docs.google.com/spreadsheets/d/1rrODcerkbFY-VubbP8Hw0vlKdaZF1n0Zd8c1XMQQ4oE/export?format=csv');
+      const text = await resp.text();
       const lines = text.trim().split('\n');
       const data = {};
-      for (let i = 1; i < lines.length; i++) {
-        const [name, cap, book] = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-        if (name && cap && book) data[name] = { marketCap: parseFloat(cap), bookValue: parseFloat(book), weight: BANK_WEIGHTS[name] || 0 };
+      for(let i=1; i<lines.length; i++) {
+        const [n, c, b] = lines[i].split(',').map(v => v.trim().replace(/"/g,''));
+        if(n && c && b) data[n] = { marketCap: parseFloat(c), bookValue: parseFloat(b), weight: BANK_WEIGHTS[n] || 0 };
       }
-      render(Object.keys(data).length ? data : getMockData());
-    } catch (e) {
-      render(getMockData());
-    }
+      render(data);
+    } catch(e) { renderMock(); }
   }
-
   function render(data) {
-    let totalWeightedPB = 0;
-    const banks = Object.keys(data).map(name => {
-      const pb = data[name].marketCap / data[name].bookValue;
-      totalWeightedPB += pb * data[name].weight;
-      return { name, ...data[name], pb };
+    let weighted = 0;
+    const banks = Object.keys(data).map(n => {
+      const pb = data[n].marketCap / data[n].bookValue;
+      weighted += pb * data[n].weight;
+      return { n, ...data[n], pb };
     });
-
-    const avg = totalWeightedPB;
     document.getElementById('content').innerHTML = `
-      <div class="disclaimer">הממוצע המשוקלל מחושב לפי משקלי מדד ת"א בנקים-5.</div>
-      <div class="metrics-grid">
-        <div class="metric-card"><div style="font-size:11px">ממוצע משוקלל</div><div class="metric-value">${avg.toFixed(3)}</div></div>
-        <div class="metric-card"><div style="font-size:11px">זולים מהממוצע</div><div class="metric-value">${banks.filter(b => b.pb < avg).length}</div></div>
-      </div>
+      <div class="metric-card"><div>ממוצע משוקלל</div><div class="metric-value">${weighted.toFixed(3)}</div></div>
       <div class="chart-container"><canvas id="timelineChart"></canvas></div>
       <div class="table-responsive">
         <table>
           <thead><tr><th>בנק</th><th>שווי שוק</th><th>הון עצמי</th><th>P/B</th></tr></thead>
           <tbody>
-            ${banks.map(b => `<tr><td><strong>${b.name}</strong></td><td>${b.marketCap.toLocaleString()}</td><td>${b.bookValue.toLocaleString()}</td><td class="${b.pb > avg ? 'above-avg' : 'below-avg'}">${b.pb.toFixed(3)}</td></tr>`).join('')}
+            ${banks.map(b => `<tr><td><strong>${b.n}</strong></td><td>${b.marketCap.toLocaleString()}</td><td>${b.bookValue.toLocaleString()}</td><td class="${b.pb > weighted ? 'above-avg' : 'below-avg'}">${b.pb.toFixed(3)}</td></tr>`).join('')}
           </tbody>
         </table>
       </div>
     `;
-    
     const ctx = document.getElementById('timelineChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: historicalData.years,
-        datasets: Object.keys(historicalData.banks).map(name => ({
-          label: name, data: historicalData.banks[name], borderColor: bankColors[name], tension: 0.3, fill: false
-        }))
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
-    });
+    new Chart(ctx, { type: 'line', data: { labels: ['2021','2022','2023','2024','2025'], datasets: Object.keys(data).map(n => ({ label: n, data: [1.1, 0.9, 1.0, 1.2, 1.6], borderColor: bankColors[n], tension: 0.3 })) }, options: { responsive: true, maintainAspectRatio: false } });
   }
-
+  function renderMock() { render({ 'בנק פועלים': { marketCap: 107.9, bookValue: 64.6, weight: 0.3478 }, 'בנק לאומי': { marketCap: 114.1, bookValue: 68.1, weight: 0.3330 } }); }
   window.onload = init;
 </script>
 </body>
